@@ -1,0 +1,41 @@
+{
+  "name": "My AI Automation Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "gemini-pro",
+        "prompt": "Analyze this job description against my resume and generate a motivation letter..."
+      },
+      "name": "Google Gemini Pro",
+      "type": "n8n-nodes-base.googleGemini",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "updates": ["message"]
+      },
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [100, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Custom data normalization and JSON parsing\nreturn items.map(item => {\n  return { json: { ...item.json, processed: true } };\n});"
+      },
+      "name": "Data Normalization",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [350, 300]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [[{ "node": "Data Normalization", "type": "main", "index": 0 }]]
+    },
+    "Data Normalization": {
+      "main": [[{ "node": "Google Gemini Pro", "type": "main", "index": 0 }]]
+    }
+  }
+}
